@@ -1,0 +1,25 @@
+# Optional: production-scale storage with TimescaleDB (a Postgres extension
+# built for time-series data — hypertables shard automatically by date range,
+# which matters once you're storing multiple sources x hundreds of stations
+# x years of daily data).
+#
+# For local dev, you don't need this at all — the default SQLite file works
+# fine. Bring this up when you outgrow it:
+#
+#   docker compose up -d
+#   export DATABASE_URL=postgresql://climate:climate@localhost:5432/climate_index_bus
+
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_USER: climate
+      POSTGRES_PASSWORD: climate
+      POSTGRES_DB: climate_index_bus
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+
+volumes:
+  timescale_data:
